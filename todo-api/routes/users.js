@@ -66,7 +66,6 @@ router.post('/auth', async function (req, res, next) {
     await user.save()
 
     res.json(new Response({
-      userid: user._id,
       email: user.email,
       name: user.name,
       token: user.token

@@ -6,28 +6,29 @@ const { Response, isTokenValid } = require('../helpers/util');
 
 router.get('/', isTokenValid, async function (req, res, next) {
     try {
-        const data = await Todo.find({user: req.user._id}).populate({path: 'user', select: 'name'})
+        const data = await Todo.find({ user: req.user._id }).populate({ path: 'user', select: 'name' })
         res.json(new Response(data))
     } catch (e) {
         res.status(500).json(new Response(e, false))
     }
 });
 
-router.post('/', async function (req, res, next) {
+router.post('/', isTokenValid, async function (req, res, next) {
     try {
-        const { title, UserId } = req.body
-        const user = await User.findById(UserId)
+        console.log('yang login', req.user)
+        const { title } = req.body
+        const user = await User.findById(req.user._id)
         const todo = await Todo.create({ title, user })
         user.todos.push(todo._id)
         await user.save()
         res.json(new Response(todo))
     } catch (e) {
-        console.log('gagal',e)
+        console.log('gagal', e)
         res.status(500).json(new Response(e, false))
     }
 });
 
-router.put('/:id', async function (req, res, next) {
+router.put('/:id', isTokenValid, async function (req, res, next) {
     try {
         const { title, complete } = req.body
         const data = await Todo.findByIdAndUpdate(
@@ -46,11 +47,16 @@ router.put('/:id', async function (req, res, next) {
     }
 });
 
-router.delete('/:id', async function (req, res, next) {
+router.delete('/:id', isTokenValid, async function (req, res, next) {
     try {
         const data = await Todo.findByIdAndRemove(req.params.id)
+        const user = await User.findById(data.user)
+        
+        user.todos = user.todos.filter(item => !item.equals(data._id))
+        await user.save()
         res.json(new Response(data))
     } catch (e) {
+        console.log(e)
         res.status(500).json(new Response(e, false))
     }
 });
