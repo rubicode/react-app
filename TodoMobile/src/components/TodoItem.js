@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { View, TextInput, Picker, Text, TouchableOpacity } from "react-native";
+import {Picker} from '@react-native-picker/picker';
+import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { useDispatch } from 'react-redux';
 import { updateTodo, removeTodo, resendTodo } from '../features/todo/todoSlice'
 
