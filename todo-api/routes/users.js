@@ -24,7 +24,7 @@ router.post('/', async function (req, res, next) {
   }
 });
 
-router.put('/:id', isTokenValid, async function (req, res, next) {
+router.put('/:id', async function (req, res, next) {
   try {
     const { name, address } = req.body
     const data = await User.findByIdAndUpdate(
@@ -56,7 +56,7 @@ router.post('/auth', async function (req, res, next) {
   try {
     const { email, password } = req.body
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).select('+password')
     if (!user.comparePassword(password)) {
       return res.json(new Response({ message: "password doesn't match" }, false))
     }

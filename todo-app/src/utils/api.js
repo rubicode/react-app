@@ -1,6 +1,12 @@
 import axios from 'axios'
 import { Fragment } from 'react';
 import { Navigate } from "react-router-dom";
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+export const graphqlClient = new ApolloClient({
+    uri: 'http://localhost:3001/graphql',
+    cache: new InMemoryCache(),
+  });
 
 export const request = axios.create({
     baseURL: 'http://localhost:3001/',

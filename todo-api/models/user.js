@@ -4,7 +4,7 @@ const saltRounds = 10;
 
 const userSchema = new Schema({
     email: { type: String, lowercase: true, requird: true },
-    password: String,
+    password: {type: String, select: false },
     name: String,
     address: String,
     token: String,
@@ -15,7 +15,6 @@ userSchema.pre("save", function (next) {
     const user = this
 
     if (this.isModified("password") || this.isNew) {
-        console.log(user.password, saltRounds)
         const hash = bcrypt.hashSync(user.password, saltRounds);
         user.password = hash
         next()
